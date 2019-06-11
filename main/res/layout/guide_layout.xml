@@ -1,76 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_guide"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/activity_guide">
+    android:layout_height="match_parent">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/in_viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v4.view.ViewPager>
+        android:layout_height="match_parent"></android.support.v4.view.ViewPager>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/rl_dots">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <Button
+            android:id="@+id/bt_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/bt_next"
-            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="40dp"
             android:background="@drawable/in_button_bg"
+            android:visibility="gone"
             android:text="立即体验"
-            android:textSize="20sp"/>
-    </RelativeLayout>
+            android:textSize="20sp" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp"
-        android:id="@+id/rl_dots">
-
-        <LinearLayout
-            android:id="@+id/ll"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:id="@+id/rl_dots"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:layout_marginBottom="15dip"
             android:layout_alignParentBottom="true"
-            >
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp">
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/ll"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/light_dot"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-           />
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="15dip"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/gray_dot"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/light_dot" />
 
-                />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/gray_dot"
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/gray_dot"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-            />
-        </LinearLayout>
+                    />
 
-    </RelativeLayout>
-
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/gray_dot" />
+            </LinearLayout>
+        </RelativeLayout>
+    </FrameLayout>
 </RelativeLayout>

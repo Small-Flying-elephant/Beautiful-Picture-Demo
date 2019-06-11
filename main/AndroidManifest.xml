@@ -2,13 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.hwx631346.beautifulpicturedemo">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
     <application
+        android:name=".BeautifulPictureApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/Theme.Design.Light.NoActionBar"
+        android:networkSecurityConfig="@xml/network_security_config">
         <activity android:name=".MainActivity"></activity>
 
         <activity android:name=".splash.SplashActivity">
@@ -20,6 +28,8 @@
         </activity>
         
         <activity android:name=".GuideActivity"/>
+
+        <activity android:name=".PictureDetailActivity"/>
     </application>
 
 </manifest>

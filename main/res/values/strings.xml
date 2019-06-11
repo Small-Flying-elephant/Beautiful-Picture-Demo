@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Beautiful Picture Demo</string>
+    <string name="refresh_success">refresh success</string>
+    <string name="load_more_num">load more num</string>
 </resources>
