@@ -164,6 +164,8 @@ public class ImageFragment extends Fragment {
         };
     }
 
+
+
     private class SisterTask extends AsyncTask<Void, Void, ArrayList<SisterBean>> {
 
         private int page;
@@ -180,13 +182,29 @@ public class ImageFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<SisterBean> sisters) {
             super.onPostExecute(sisters);
-            mData.addAll(sisters);
+            UrlIsOk(sisters);
             try {
                 // 子线程执行完毕的地方，利用主线程的handler发送消息
                 uiHandler.obtainMessage().sendToTarget();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        private void UrlIsOk(ArrayList<SisterBean> sisters) {
+            for (int i = 0; i < sisters.size(); i++) {
+                try {
+                    boolean isOk = SisterApi.urlIsOk(sisters.get(i).getUrl());
+                    Log.d("linsheng", "UrlIsOk: " + isOk + sisters.get(i).getUrl());
+                    if (!isOk){
+                        sisters.remove(i);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            Log.d("linsheng", "UrlIsOk: " + sisters.size());
+            mData.addAll(sisters);
         }
     }
 }

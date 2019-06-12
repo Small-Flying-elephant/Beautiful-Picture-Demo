@@ -28,6 +28,7 @@ public class SisterApi {
 
     private static final String BASE_URL = "http://gank.io/api/data/福利/";
     private static final OkHttpClient client = new OkHttpClient();
+    private static boolean isOk = false;
     /**
      * 查詢妹子信息
      */
@@ -89,30 +90,35 @@ public class SisterApi {
 
 
 
-    public static void run(String URL) throws Exception {
+    public static boolean urlIsOk(String URL) throws Exception {
+
         Request request = new Request.Builder()
                 .url(URL)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d("linsheng", "onFailure: ");
+                isOk = false;
                 e.printStackTrace();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    Log.d("linsheng", "onFailuresadfadfa: ");
-                    throw new IOException("Unexpected code " + response);
+                    isOk = false;
+                    Log.d("linsheng", "onResponse: ");
+                } else {
+                    Log.d("linsheng", "onResponse: asdfasdfasdfaf");
+                    isOk = true;
                 }
-                Headers responseHeaders = response.headers();
-                for (int i = 0; i < responseHeaders.size(); i++) {
-                    System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
-                }
-                Log.d("linsheng", "onFailuresadfadfa:asdfasdfasdadfsafd ");
-                System.out.println(response.body().string());
+//                Headers responseHeaders = response.headers();
+//                for (int i = 0; i < responseHeaders.size(); i++) {
+//                    System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+//                }
+//                System.out.println(response.body().string());
             }
         });
+        Log.d("linsheng", "urlIsOk: " + isOk  + "  " +URL);
+        return isOk;
     }
 }

@@ -73,15 +73,9 @@ public class MZAdapter extends RecyclerView.Adapter<MZAdapter.ViewHolder> {
             img_content.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        SisterApi.run(data.getUrl());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-//                    Intent intent = new Intent(mContext, PictureDetailActivity.class);
-//                    intent.putExtra("pic_url", data.getUrl());
-//                    mContext.startActivity(intent);
+                    Intent intent = new Intent(mContext, PictureDetailActivity.class);
+                    intent.putExtra("pic_url", data.getUrl());
+                    mContext.startActivity(intent);
                 }
             } );
         }
