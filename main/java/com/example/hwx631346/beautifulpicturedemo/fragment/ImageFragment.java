@@ -37,8 +37,7 @@ public class ImageFragment extends Fragment {
     private FloatingActionButton fab_top;
     private RecyclerView rec_mz;
     private int mCurPage = 1;
-    private ArrayList<SisterBean> mData;
-    private ArrayList<SisterBean> mDatas;
+    private ArrayList<SisterBean> mData = new ArrayList<>();
     private static final int SPANCOUNT = 2;
     private final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private MZAdapter mAdapter;
@@ -60,27 +59,21 @@ public class ImageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mData = new ArrayList<>();
-        Log.d("linsheng", "onViewCreated: " + mData);
         mAdapter = new MZAdapter(getActivity(), mData);
         rec_mz.setAdapter(mAdapter);
         srl_refresh.setRefreshing(true);
         fetchMZ(true);
-        Log.d("linsheng", "onViewCreated: ");
     }
 
     private void initView(View view) {
         srl_refresh = view.findViewById(R.id.srl_refresh);
         rec_mz = view.findViewById(R.id.rec_mz);
         fab_top = view.findViewById(R.id.fab_top);
-        Log.d("linsheng", "initView: ");
         srl_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.d("linsheng", "onRefresh: ");
                 mCurPage = 1;
                 fetchMZ(true);
-                Log.d("linsheng", "onRefresh: ");
             }
         });
         final GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), SPANCOUNT);
@@ -89,12 +82,11 @@ public class ImageFragment extends Fragment {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                LinearLayoutManager layoutManager1 = (LinearLayoutManager) recyclerView.getLayoutManager();
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {//加载更多
                     if (layoutManager.getItemCount() - recyclerView.getChildCount() <= layoutManager.findFirstVisibleItemPosition()) {
                         ++mCurPage;
                         fetchMZ(false);
-                        Log.d("linsheng", "onScrollStateChanged: ");
                     }
                 }
 
@@ -155,61 +147,46 @@ public class ImageFragment extends Fragment {
 
     private void fetchMZ(boolean isRefresh) {
         new SisterTask(mCurPage).execute();
-        mDatas = new ArrayList<>();
         uiHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case 1:
-                        Log.d("linsheng", "handleMessage:asdafaf " + mData.size());
-                        if (mDatas != null && mDatas.size() > 0) {
-                            if (isRefresh) {
-                                Log.d("linsheng", "handleMessage: " + mData.size());
-                                mAdapter.addAll(mDatas);
-                                ToastUtils.shortToast(ResUtils.getString(R.string.refresh_success));
-                            } else {
-                                Log.d("linsheng", "handleMessage:1234544 ");
-                                mAdapter.loadMore(mDatas);
-                                String mssg = String.format(ResUtils.getString(R.string.load_more_num), mData.size(), "妹子");
-                                ToastUtils.shortToast(mssg);
-                            }
-                            srl_refresh.setRefreshing(false);
-                            break;
-                        }
+                if (mData != null && mData.size() > 0) {
+                    if (isRefresh) {
+                        mAdapter.addAll(mData);
+                    } else {
+                        mAdapter.loadMore(mData);
+                        String mssg = String.format(ResUtils.getString(R.string.load_more_num), mData.size(), "妹子");
+                        ToastUtils.shortToast(mssg);
+                    }
+                    srl_refresh.setRefreshing(false);
                 }
             }
         };
     }
 
-        private class SisterTask extends AsyncTask<Void, Void, ArrayList<SisterBean>> {
+    private class SisterTask extends AsyncTask<Void, Void, ArrayList<SisterBean>> {
 
-            private int page;
+        private int page;
 
-            public SisterTask(int page) {
-                this.page = page;
-            }
+        public SisterTask(int page) {
+            this.page = page;
+        }
 
-            @Override
-            protected ArrayList<SisterBean> doInBackground(Void... params) {
-                Log.d("linsheng", "doInBackground: ");
-                return SisterApi.fetchSister(20, page);
-            }
+        @Override
+        protected ArrayList<SisterBean> doInBackground(Void... params) {
+            return SisterApi.fetchSister(20, page);
+        }
 
-            @Override
-            protected void onPostExecute(ArrayList<SisterBean> sisters) {
-                super.onPostExecute(sisters);
-                mData.clear();
-                mData.addAll(sisters);
-                mDatas.addAll(sisters);
-                Log.d("linsheng", "onPostExecute: " + mData);
-                try{
-                    // 子线程执行完毕的地方，利用主线程的handler发送消息
-                    Message msg = new Message();
-                    msg.what = 1;
-                    uiHandler.sendMessage(msg);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+        @Override
+        protected void onPostExecute(ArrayList<SisterBean> sisters) {
+            super.onPostExecute(sisters);
+            mData.addAll(sisters);
+            try {
+                // 子线程执行完毕的地方，利用主线程的handler发送消息
+                uiHandler.obtainMessage().sendToTarget();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
+}

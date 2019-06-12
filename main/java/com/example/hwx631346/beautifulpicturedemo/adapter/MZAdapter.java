@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.hwx631346.beautifulpicturedemo.PictureDetailActivity;
 import com.example.hwx631346.beautifulpicturedemo.R;
 import com.example.hwx631346.beautifulpicturedemo.bean.SisterBean;
+import com.example.hwx631346.beautifulpicturedemo.network.SisterApi;
 
 import java.util.ArrayList;
 
@@ -24,21 +24,19 @@ public class MZAdapter extends RecyclerView.Adapter<MZAdapter.ViewHolder> {
     private ArrayList<SisterBean> mzs;
 
     public void addAll(ArrayList<SisterBean> data){
-        Log.d("linsheng", "addAll: " +data);
-        mzs.clear();
-        mzs.addAll(data);
+        mzs = data;
         notifyDataSetChanged();
     }
 
     public void loadMore(ArrayList<SisterBean> data){
-        mzs.addAll(data);
+        mzs = data;
+        notifyDataSetChanged();
     }
 
 
     public MZAdapter(Context mContext, ArrayList<SisterBean> mzs) {
         this.mContext = mContext;
         this.mzs = mzs;
-        Log.d("linsheng", "MZAdapter: ");
     }
 
     @NonNull
@@ -54,7 +52,6 @@ public class MZAdapter extends RecyclerView.Adapter<MZAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        Log.d("linsheng", "getItemCount: " + mzs.size());
         return mzs.size();
     }
 
@@ -76,9 +73,15 @@ public class MZAdapter extends RecyclerView.Adapter<MZAdapter.ViewHolder> {
             img_content.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, PictureDetailActivity.class);
-                    intent.putExtra("pic_url", data.getUrl());
-                    mContext.startActivity(intent);
+                    try {
+                        SisterApi.run(data.getUrl());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+//                    Intent intent = new Intent(mContext, PictureDetailActivity.class);
+//                    intent.putExtra("pic_url", data.getUrl());
+//                    mContext.startActivity(intent);
                 }
             } );
         }

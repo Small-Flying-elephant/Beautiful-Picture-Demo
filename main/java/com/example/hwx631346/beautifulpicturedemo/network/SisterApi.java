@@ -15,6 +15,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -24,23 +27,19 @@ public class SisterApi {
     private static final String TAG = "Network";
 
     private static final String BASE_URL = "http://gank.io/api/data/福利/";
-
+    private static final OkHttpClient client = new OkHttpClient();
     /**
      * 查詢妹子信息
      */
     public static ArrayList<SisterBean> fetchSister(int count, int page) {
         String fetchUrl = BASE_URL + count + "/" + page;
-        Log.d("linsheng", "fetchSister: " + count  + page + fetchUrl);
         ArrayList<SisterBean> sisters = new ArrayList<>();
         try {
             URL url = new URL(fetchUrl);
-            Log.d("linsheng", "fetchSister: " + url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            Log.d("linsheng", "fetchSister: " + conn);
             conn.setConnectTimeout(5000);
             conn.setRequestMethod("GET");
             int code = conn.getResponseCode();
-            Log.d("linsheng", "fetchSister: " + code);
             if (code == 200) {
                 InputStream in = conn.getInputStream();
                 byte[] data = readFromStream(in);
@@ -48,22 +47,19 @@ public class SisterApi {
                 sisters = parseSister(result);
             } else {
                 Log.e(TAG, "请求失败：" + code);
-                Log.d("linsheng", "请求失败 " + code);
             }
         } catch (Exception e) {
-            Log.d("linsheng", "fetchSister: dsd" + e.getMessage() + e);
             e.printStackTrace();
         }
         return sisters;
     }
 
 
-
     private static ArrayList<SisterBean> parseSister(String result) throws JSONException {
         ArrayList<SisterBean> sisterBeans = new ArrayList<>();
         JSONObject object = new JSONObject(result);
         JSONArray array = object.getJSONArray("results");
-        for (int i = 0 ; i < array.length() ; i++){
+        for (int i = 0; i < array.length(); i++) {
             JSONObject results = (JSONObject) array.get(i);
             SisterBean sister = new SisterBean();
             sister.set_id(results.getString("_id"));
@@ -83,11 +79,40 @@ public class SisterApi {
     private static byte[] readFromStream(InputStream inputStream) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
-        int len ;
-        while ((len = inputStream.read(buffer)) != -1){
-            outputStream.write(buffer,0,len);
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, len);
         }
         inputStream.close();
         return outputStream.toByteArray();
+    }
+
+
+
+    public static void run(String URL) throws Exception {
+        Request request = new Request.Builder()
+                .url(URL)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("linsheng", "onFailure: ");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    Log.d("linsheng", "onFailuresadfadfa: ");
+                    throw new IOException("Unexpected code " + response);
+                }
+                Headers responseHeaders = response.headers();
+                for (int i = 0; i < responseHeaders.size(); i++) {
+                    System.out.println(responseHeaders.name(i) + ": " + responseHeaders.value(i));
+                }
+                Log.d("linsheng", "onFailuresadfadfa:asdfasdfasdadfsafd ");
+                System.out.println(response.body().string());
+            }
+        });
     }
 }
